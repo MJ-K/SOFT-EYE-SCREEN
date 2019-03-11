@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import frame.Login;
 public class client_frame extends javax.swing.JFrame 
 {
-    String username=Login.id ,address= "192.168.0.4";
+    String username=Login.id ,address= "127.0.0.1";
     ArrayList<String> users = new ArrayList();
     int port = 2222;
     Boolean isConnected = false;
