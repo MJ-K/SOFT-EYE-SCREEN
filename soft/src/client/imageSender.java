@@ -1,4 +1,4 @@
-package frame;
+package client;
 
 import java.awt.AWTException;
 import java.awt.Color;
@@ -39,7 +39,6 @@ import com.sun.image.codec.jpeg.ImageFormatException;
  *
  */
 public class imageSender extends Thread {
-   
    /* Flags and sizes */
    public static int HEADER_SIZE = 8;
    public static int MAX_PACKETS = 255;
@@ -60,8 +59,7 @@ public class imageSender extends Thread {
    /* Default parameters */
    public static double SCALING = 0.5;
    public static int SLEEP_MILLIS = 2000;
-   public static String IP_ADDRESS =  "192.168.0.255";
-   //public static String IP_ADDRESS =null;//=  "127.0.0.1";
+   public static String IP_ADDRESS =null;//=  "127.0.0.1";
    public static int PORT = 4444;
    public static boolean SHOW_MOUSEPOINTER = true;
 
@@ -87,7 +85,7 @@ public class imageSender extends Thread {
         for(int i=0 ;i<3;i++){
            temp[i]= st.nextToken();
         }
-        //IP_ADDRESS=temp[0]+"."+temp[1]+"."+temp[2]+"."+"255";
+        IP_ADDRESS=temp[0]+"."+temp[1]+"."+temp[2]+"."+"255";
         System.out.println(IP_ADDRESS);
       return IP_ADDRESS;
    }

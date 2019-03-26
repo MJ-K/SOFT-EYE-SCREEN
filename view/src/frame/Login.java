@@ -59,7 +59,8 @@ public class Login extends JFrame implements ActionListener{
       try{
          img = ImageIO.read(new File("img/이게바로바탕이다.png"));//바탕화면 집어넣기
       }catch(IOException e){
-//    	  System.out.println("파일을 불러오지 못함");
+    	  //System.out.println("파일을 불러오지 못함");
+    	  
          
       }
       
