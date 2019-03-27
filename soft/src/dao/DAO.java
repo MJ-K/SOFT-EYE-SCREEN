@@ -21,6 +21,8 @@ public class DAO {
 	
 	// 로그인을 위해 회원 정보가 맞는지 확인
 	public boolean isExist(int id, String pw) {
+		rs = null;
+		
 		sb.setLength(0);
 		sb.append("select * from user ");
 		sb.append("where id = ? and passwd = ? ");
@@ -44,6 +46,8 @@ public class DAO {
 	}
 	
 	public int getIsStudent(int id) {
+		rs = null;
+		
 		sb.setLength(0);
 		sb.append("select isStudent from user ");
 		sb.append("where id = ? ");
@@ -67,6 +71,8 @@ public class DAO {
 	}
 	
 	public String getName(int id) {
+		rs = null;
+		
 		sb.setLength(0);
 		sb.append("select name from user ");
 		sb.append("where id = ? ");
@@ -78,6 +84,8 @@ public class DAO {
 			pstmt.setInt(1, id);
 			
 			rs = pstmt.executeQuery();
+			
+			rs.next();
 			
 			name = rs.getString("name");
 		} catch (SQLException e) {
@@ -121,6 +129,8 @@ public class DAO {
 	}
 	
 	public ArrayList<Integer> getConnect() {
+		rs = null;
+		
 		sb.setLength(0);
 		sb.append("select id from user ");
 		sb.append("where isConnect = 1 ");
