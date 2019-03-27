@@ -3,12 +3,17 @@ package client;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
+
 import java.io.InputStreamReader;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-public class client_frame extends javax.swing.JFrame 
+public class client_frame extends javax.swing.JFrame implements KeyListener
 {
-    String username = String.valueOf(Login.id), address= "192.168.0.4";
+    String username = String.valueOf(Login.id), address= "192.168.0.25";
     ArrayList<String> users = new ArrayList();
     int port = 2222;
     Boolean isConnected = false;
@@ -62,7 +67,7 @@ public class client_frame extends javax.swing.JFrame
             writer.flush(); 
         } catch (Exception e) 
         {
-            ta_chat.append("Could not send Disconnect message.\n");
+            ta_chat.append("접속 해제 메세지를 전송할 수 없습니다.\n");
         }
     }
 
@@ -72,10 +77,10 @@ public class client_frame extends javax.swing.JFrame
     {
         try 
         {
-            ta_chat.append("Disconnected.\n");
+            ta_chat.append("접속 해제하였습니다.\n");
             sock.close();
         } catch(Exception ex) {
-            ta_chat.append("Failed to disconnect. \n");
+            ta_chat.append("접속중이 아닙니다. \n");
         }
         isConnected = false;
         tf_username.setEditable(true);
@@ -103,7 +108,15 @@ public class client_frame extends javax.swing.JFrame
                 {
                      data = stream.split(":");
 
-                     if (data[2].equals(chat)) 
+                     if(data[1].equals("님이 접속하셨습니다.")) {
+                    	 ta_chat.append(data[0] + data[1] + "\n");
+                         ta_chat.setCaretPosition(ta_chat.getDocument().getLength());
+                     }
+                     else if(data[1].equals("님이 퇴장하셨습니다.")) {
+                    	 ta_chat.append(data[0] + data[1] + "\n");
+                         ta_chat.setCaretPosition(ta_chat.getDocument().getLength());
+                     }
+                     else if (data[2].equals(chat)) 
                      {
                         ta_chat.append(data[0] + ": " + data[1] + "\n");
                         ta_chat.setCaretPosition(ta_chat.getDocument().getLength());
@@ -138,10 +151,10 @@ public class client_frame extends javax.swing.JFrame
         tf_address = new javax.swing.JTextField();
         lb_port = new javax.swing.JLabel();
         tf_port = new javax.swing.JTextField();
+        lb_studentnum = new javax.swing.JLabel();
+        tf_studentnum = new javax.swing.JTextField();
         lb_username = new javax.swing.JLabel();
         tf_username = new javax.swing.JTextField();
-        lb_password = new javax.swing.JLabel();
-        tf_password = new javax.swing.JTextField();
         b_connect = new javax.swing.JButton();
         b_disconnect = new javax.swing.JButton();
         b_anonymous = new javax.swing.JButton();
@@ -151,8 +164,6 @@ public class client_frame extends javax.swing.JFrame
         b_send = new javax.swing.JButton();
         lb_name = new javax.swing.JLabel();
     
-
-
         if( getDefaultCloseOperation() ==javax.swing.WindowConstants.EXIT_ON_CLOSE)
         {
            this.setVisible(false);
@@ -161,34 +172,46 @@ public class client_frame extends javax.swing.JFrame
         setName("client"); // NOI18N
         setResizable(false);
 
-        lb_address.setText("Address : ");
+        lb_address.setText("주소 : ");
 
-        tf_address.setText("192.168.43.85");
+        tf_address.setText(address);
         tf_address.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_addressActionPerformed(evt);
             }
         });
+        tf_address.setEditable(false);
 
-        lb_port.setText("Port :");
+        lb_port.setText("포트 :");
 
-        tf_port.setText("2222");
+        tf_port.setText(String.valueOf(port));
         tf_port.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_portActionPerformed(evt);
             }
         });
+        tf_port.setEditable(false);
 //Login.id 
-        lb_username.setText("Username :");
+        lb_studentnum.setText("학번 : ");
 
-        tf_username.setText(String.valueOf(Login.id));
+        tf_studentnum.setText(String.valueOf(Login.id));
+        /*tf_studentnum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tf_usernameActionPerformed(evt);
+            }
+        });*/
+        
+        tf_studentnum.setEditable(false);
+
+        lb_username.setText("사용자 이름 : ");
+        
+        tf_username.setDocument(new JTextFieldLimit(10));
+        tf_username.setText(Login.name);
         tf_username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_usernameActionPerformed(evt);
             }
         });
-
-        lb_password.setText("Password : ");
 
        /* b_connect.setText("Connect");
         b_connect.addActionListener(new java.awt.event.ActionListener() {
@@ -196,15 +219,17 @@ public class client_frame extends javax.swing.JFrame
                 b_connectActionPerformed(evt);
             }
         });*/
+        
+        tf_chat.addKeyListener(this);
 
-        b_disconnect.setText("Disconnect");
+        b_disconnect.setText("접속 해제");
         b_disconnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_disconnectActionPerformed(evt);
             }
         });
 
-        b_anonymous.setText("Login");
+        b_anonymous.setText("접속");
         b_anonymous.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_anonymousActionPerformed(evt);
@@ -213,14 +238,16 @@ public class client_frame extends javax.swing.JFrame
 
         ta_chat.setColumns(20);
         ta_chat.setRows(5);
+        ta_chat.setEditable(false);
         jScrollPane1.setViewportView(ta_chat);
 
-        b_send.setText("SEND");
+        b_send.setText("전송");
         b_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_sendActionPerformed(evt);
             }
         });
+        b_send.addKeyListener(this);
 
        /* lb_name.setText("TechWorld3g");
         lb_name.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));*/
@@ -239,20 +266,20 @@ public class client_frame extends javax.swing.JFrame
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(lb_username, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                            .addComponent(lb_studentnum, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
                             .addComponent(lb_address, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tf_address, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
-                            .addComponent(tf_username))
+                            .addComponent(tf_studentnum))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lb_password, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lb_username, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(lb_port, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tf_password)
-                            .addComponent(tf_port, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
+                            .addComponent(tf_username)
+                            .addComponent(tf_port, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -279,11 +306,11 @@ public class client_frame extends javax.swing.JFrame
                     .addComponent(b_anonymous))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(tf_studentnum)
                     .addComponent(tf_username)
-                    .addComponent(tf_password)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lb_studentnum)
                         .addComponent(lb_username)
-                        .addComponent(lb_password)
                         //.addComponent(b_connect)
                         .addComponent(b_disconnect)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -297,6 +324,8 @@ public class client_frame extends javax.swing.JFrame
         );
 
         pack();
+        
+        setLocation(700, 230);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tf_addressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_addressActionPerformed
@@ -323,13 +352,13 @@ public class client_frame extends javax.swing.JFrame
                 InputStreamReader streamreader = new InputStreamReader(sock.getInputStream());
                 reader = new BufferedReader(streamreader);
                 writer = new PrintWriter(sock.getOutputStream());
-                writer.println(username + ":has connected.:Connect");
+                writer.println(username + ":님이 접속하셨습니다.:Connect");
                 writer.flush(); 
                 isConnected = true; 
             } 
             catch (Exception ex) 
             {
-                ta_chat.append("Cannot Connect! Try Again. \n");
+                ta_chat.append("접속할 수 없습니다. 다시 시도해주세요. \n");
                 tf_username.setEditable(true);
             }
             
@@ -337,7 +366,7 @@ public class client_frame extends javax.swing.JFrame
             
         } else if (isConnected == true) 
         {
-            ta_chat.append("You are already connected. \n");
+            ta_chat.append("이미 접속중입니다. \n");
         }
     }//GEN-LAST:event_b_connectActionPerformed
 
@@ -347,17 +376,19 @@ public class client_frame extends javax.swing.JFrame
     }//GEN-LAST:event_b_disconnectActionPerformed
 
     private void b_anonymousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_anonymousActionPerformed
-        tf_username.setText("");
-        String student_number;  
-        if (isConnected == false) 
+        String user;  
+        if(tf_username.getText().equals("")) {
+        	JOptionPane.showMessageDialog(null, "사용자 이름을 입력하세요.");
+        }
+        else if (isConnected == false) 
         {
-           student_number = String.valueOf(Login.id);
-            String anon=student_number;
+        	user = tf_username.getText();
+            String anon = user;
           /*  Random generator = new Random(); 
             int i = generator.nextInt(999) + 1;
             String is=String.valueOf(i);
             anon=anon.concat(is);*/
-            username=anon;
+            username = anon;
             
             tf_username.setText(anon);
             tf_username.setEditable(false);
@@ -368,13 +399,13 @@ public class client_frame extends javax.swing.JFrame
                 InputStreamReader streamreader = new InputStreamReader(sock.getInputStream());
                 reader = new BufferedReader(streamreader);
                 writer = new PrintWriter(sock.getOutputStream());
-                writer.println(anon + ":has connected.:Connect");
+                writer.println(anon + ":님이 접속하셨습니다.:Connect");
                 writer.flush(); 
                 isConnected = true; 
             } 
             catch (Exception ex) 
             {
-                ta_chat.append("Cannot Connect! Try Again. \n");
+                ta_chat.append("접속할 수 없습니다. 다시 시도해주세요. \n");
                 tf_username.setEditable(true);
             }
             
@@ -382,7 +413,7 @@ public class client_frame extends javax.swing.JFrame
             
         } else if (isConnected == true) 
         {
-            ta_chat.append("You are already connected. \n");
+            ta_chat.append("이미 접속중입니다. \n");
         }        
     }//GEN-LAST:event_b_anonymousActionPerformed
 
@@ -396,7 +427,7 @@ public class client_frame extends javax.swing.JFrame
                writer.println(username + ":" + tf_chat.getText() + ":" + "Chat");
                writer.flush(); // flushes the buffer
             } catch (Exception ex) {
-                ta_chat.append("Message was not sent. \n");
+                ta_chat.append("메세지를 전송할 수 없습니다. \n");
             }
             tf_chat.setText("");
             tf_chat.requestFocus();
@@ -416,6 +447,7 @@ public class client_frame extends javax.swing.JFrame
                 new client_frame().setVisible(true);
             }
         });
+        
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -426,14 +458,50 @@ public class client_frame extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_address;
     private javax.swing.JLabel lb_name;
-    private javax.swing.JLabel lb_password;
-    private javax.swing.JLabel lb_port;
     private javax.swing.JLabel lb_username;
+    private javax.swing.JLabel lb_port;
+    private javax.swing.JLabel lb_studentnum;
     private javax.swing.JTextArea ta_chat;
     private javax.swing.JTextField tf_address;
     private javax.swing.JTextField tf_chat;
-    private javax.swing.JTextField tf_password;
-    private javax.swing.JTextField tf_port;
     private javax.swing.JTextField tf_username;
+    private javax.swing.JTextField tf_port;
+    private javax.swing.JTextField tf_studentnum;
     // End of variables declaration//GEN-END:variables
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+			String nothing = "";
+	        if ((tf_chat.getText()).equals(nothing)) {
+	            tf_chat.setText("");
+	            tf_chat.requestFocus();
+	        } else {
+	            try {
+	               writer.println(username + ":" + tf_chat.getText() + ":" + "Chat");
+	               writer.flush(); // flushes the buffer
+	            } catch (Exception ex) {
+	                ta_chat.append("메세지를 전송할 수 없습니다. \n");
+	            }
+	            tf_chat.setText("");
+	            tf_chat.requestFocus();
+	        }
+
+	        tf_chat.setText("");
+	        tf_chat.requestFocus();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }

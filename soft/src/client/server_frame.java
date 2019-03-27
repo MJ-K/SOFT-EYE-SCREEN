@@ -30,7 +30,7 @@ public class server_frame extends javax.swing.JFrame
             }
             catch (Exception ex) 
             {
-                ta_chat.append("Unexpected error... \n");
+                ta_chat.append("예상치 못한 에러... \n");
             }
 
        }
@@ -48,11 +48,10 @@ public class server_frame extends javax.swing.JFrame
                     ta_chat.append("Received: " + message + "\n");
                     data = message.split(":");
                     
-                    for (String token:data) 
+                    /*for (String token:data) 
                     {
                         ta_chat.append(token + "\n");
-                    }
-
+                    }*/
                     if (data[2].equals(connect)) 
                     {
                         tellEveryone((data[0] + ":" + data[1] + ":" + chat));
@@ -60,7 +59,7 @@ public class server_frame extends javax.swing.JFrame
                     } 
                     else if (data[2].equals(disconnect)) 
                     {
-                        tellEveryone((data[0] + ":has disconnected." + ":" + chat));
+                        tellEveryone((data[0] + ":님이 퇴장하셨습니다." + ":" + chat));
                         userRemove(data[0]);
                     } 
                     else if (data[2].equals(chat)) 
@@ -76,7 +75,6 @@ public class server_frame extends javax.swing.JFrame
              catch (Exception ex) 
              {
                 ta_chat.append("Lost a connection. \n");
-                ex.printStackTrace();
                 clientOutputStreams.remove(client);
              } 
    } 
@@ -97,7 +95,7 @@ public class server_frame extends javax.swing.JFrame
         b_end = new javax.swing.JButton();
         b_users = new javax.swing.JButton();
         b_clear = new javax.swing.JButton();
-        lb_name = new javax.swing.JLabel();
+        //lb_name = new javax.swing.JLabel();
         
         if( getDefaultCloseOperation() ==javax.swing.WindowConstants.EXIT_ON_CLOSE)
         {
@@ -111,36 +109,36 @@ public class server_frame extends javax.swing.JFrame
         ta_chat.setRows(5);
         jScrollPane1.setViewportView(ta_chat);
 
-        b_start.setText("START");
+        b_start.setText("시작");
         b_start.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_startActionPerformed(evt);
             }
         });
 
-        b_end.setText("END");
+        b_end.setText("종료");
         b_end.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_endActionPerformed(evt);
             }
         });
 
-        b_users.setText("Online Users");
+        b_users.setText("접속자 확인");
         b_users.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_usersActionPerformed(evt);
             }
         });
 
-        b_clear.setText("Clear");
+        b_clear.setText("내용 지우기");
         b_clear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_clearActionPerformed(evt);
             }
         });
 
-        lb_name.setText("TechWorld3g");
-        lb_name.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        //lb_name.setText("TechWorld3g");
+        //lb_name.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -161,7 +159,7 @@ public class server_frame extends javax.swing.JFrame
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lb_name)
+                //.addComponent(lb_name)
                 .addGap(209, 209, 209))
         );
         layout.setVerticalGroup(
@@ -178,10 +176,12 @@ public class server_frame extends javax.swing.JFrame
                     .addComponent(b_clear)
                     .addComponent(b_end))
                 .addGap(4, 4, 4)
-                .addComponent(lb_name))
+                /*.addComponent(lb_name)*/)
         );
 
         pack();
+        
+        setLocation(700, 230);
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_endActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_endActionPerformed
@@ -201,11 +201,11 @@ public class server_frame extends javax.swing.JFrame
         Thread starter = new Thread(new ServerStart());
         starter.start();
         
-        ta_chat.append("Server started...\n");
+        ta_chat.append("서버 시작\n");
     }//GEN-LAST:event_b_startActionPerformed
 
     private void b_usersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_usersActionPerformed
-        ta_chat.append("\n Online users : \n");
+        ta_chat.append("\n 접속자 : \n");
         for (String current_user : users)
         {
             ta_chat.append(current_user);
@@ -293,22 +293,22 @@ public class server_frame extends javax.swing.JFrame
     
     public void tellEveryone(String message) 
     {
-   Iterator it = clientOutputStreams.iterator();
+    	Iterator it = clientOutputStreams.iterator();
 
         while (it.hasNext()) 
         {
             try 
             {
                 PrintWriter writer = (PrintWriter) it.next();
-      writer.println(message);
-      ta_chat.append("Sending: " + message + "\n");
+                writer.println(message);
+      			ta_chat.append("Sending: " + message + "\n");
                 writer.flush();
                 ta_chat.setCaretPosition(ta_chat.getDocument().getLength());
 
             } 
             catch (Exception ex) 
             {
-      ta_chat.append("Error telling everyone. \n");
+            	ta_chat.append("Error telling everyone. \n");
             }
         } 
     }
@@ -319,7 +319,7 @@ public class server_frame extends javax.swing.JFrame
     private javax.swing.JButton b_start;
     private javax.swing.JButton b_users;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lb_name;
+    //private javax.swing.JLabel lb_name;
     private javax.swing.JTextArea ta_chat;
     // End of variables declaration//GEN-END:variables
 }

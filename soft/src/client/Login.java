@@ -37,6 +37,7 @@ public class Login extends JFrame implements ActionListener, KeyListener, MouseL
    public ButtonGroup group = new ButtonGroup();
    String idStr;
    public static int id;
+   public static String name;
    
    public static void main(String args[]){
 	   new Login();
@@ -103,7 +104,7 @@ public class Login extends JFrame implements ActionListener, KeyListener, MouseL
 
    class Mypanel extends JPanel{
       public void paint(Graphics g){
-         g.drawImage(img,0,0,null);
+         g.drawImage(img, 0, 0, null);
       }
    }
    
@@ -131,6 +132,8 @@ public class Login extends JFrame implements ActionListener, KeyListener, MouseL
 			   id = Integer.parseInt(idStr);
 			   
 			   DAO dao = new DAO();
+			   name = dao.getName(id);
+			   
 			   if(dao.isExist(id, passwd)) {
 				   if(dao.getIsStudent(id) == 0) {
 					   System.out.println("강사 로그인");
@@ -141,7 +144,6 @@ public class Login extends JFrame implements ActionListener, KeyListener, MouseL
 						   e.printStackTrace();
 					   }
 					   this.setVisible(false);
-					   
 				   }
 				   else if(dao.getIsStudent(id) == 1) {
 					   System.out.println("학생 로그인");

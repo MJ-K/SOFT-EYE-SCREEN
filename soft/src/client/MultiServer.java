@@ -87,4 +87,4 @@ public class MultiServer extends JFrame {
       }//catch
     }//send
   }//내부 클래스
-}//end 
+}//end

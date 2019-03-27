@@ -9,7 +9,7 @@ public class DBConnection {
 	private static Connection conn = null;
 
 	final String DRIVER = "com.mysql.jdbc.Driver";
-	final String URL = "jdbc:mysql://localhost:3306/softDB?useSSL=false&useUnicode=true&characterEncoding=UTF-8";
+	final String URL = "jdbc:mysql://192.168.0.25:3306/softDB?useSSL=false&useUnicode=true&characterEncoding=UTF-8";
 	
 	final String USER = "softUser";
 	final String PASSWORD = "1234";
